@@ -48,6 +48,30 @@ npm --prefix client run dev    # web en http://localhost:5173
 
 El cliente de producción se construye con `npm run build` (genera `client/dist/`).
 
+## Si el servidor no arranca: error "Could not locate the bindings file"
+
+El backend usa `better-sqlite3`, un módulo nativo que descarga su archivo
+compilado (`.node`) con su script de instalación. Si npm tiene bloqueados los
+scripts de instalación, ese archivo nunca se descarga y al arrancar el servidor
+sale `Error: Could not locate the bindings file`.
+
+Para permitir solo ese script, en la carpeta del proyecto:
+
+```sh
+npm install-scripts approve better-sqlite3
+```
+
+Luego vuelve a instalar las dependencias del servidor y arráncalo:
+
+```sh
+npm --prefix server install
+npm --prefix server run dev
+```
+
+Se recomienda Node 22 o más nuevo: esas versiones ya traen el archivo
+compilado listo para descargar. Con Node 20, aunque se apruebe el script, no
+hay archivo listo y habría que compilarlo con herramientas de C++.
+
 ## Endpoints de la API
 
 | Método | Ruta | Qué hace |
